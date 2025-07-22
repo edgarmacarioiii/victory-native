@@ -36,7 +36,8 @@ export default class extends VictoryContainer {
         this.props.allowResize ||
         this.props.allowSelection ||
         this.props.allowPan ||
-        this.props.allowZoom)
+        this.props.allowZoom) &&
+      !this.props.unblockNativeResponder
     ) {
       shouldBlockNativeResponder = yes;
     }
