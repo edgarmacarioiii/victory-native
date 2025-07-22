@@ -16,12 +16,15 @@ export default class extends VictoryContainer {
     unblockNativeResponder: PropTypes.bool,
     onTouchEnd: PropTypes.func,
     onTouchStart: PropTypes.func,
-    onScrollHandler: PropTypes.func
+    onScrollHandler: PropTypes.func,
   });
 
   constructor(props) {
     super(props);
     this.panResponder = this.getResponder();
+    this.state = {
+      touchReleased: true,
+    };
   }
 
   getResponder() {
@@ -57,7 +60,7 @@ export default class extends VictoryContainer {
       // The user has released all touches
       onPanResponderRelease: this.handleResponderEnd.bind(this),
       // Another component has become the responder
-      onPanResponderTerminate: this.handleResponderEnd.bind(this)
+      onPanResponderTerminate: this.handleResponderEnd.bind(this),
     });
   }
 
@@ -76,11 +79,24 @@ export default class extends VictoryContainer {
     this.callOptionalEventCallback("onTouchStart", evt);
   }
 
-  handleResponderMove(evt) {
+  handleResponderMove(evt, gestureState) {
     const { touches } = evt.nativeEvent;
     if (touches && touches.length === 2) {
       this.callOptionalEventCallback("onTouchPinch", evt);
     } else {
+      /**
+       * This is a fix for ScrollView stops the panResponder mid-animation
+       * and prioritizes scrolling when user moves their finger up/down during panning.
+       */
+      const pan = Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      if (this.state.touchReleased && !pan) {
+        if (this.props.onScrollHandler) {
+          this.props.onScrollHandler(true);
+        }
+      } else if (this.props.onScrollHandler) {
+        this.props.onScrollHandler(false);
+        this.setState({ touchReleased: false });
+      }
       this.callOptionalEventCallback("onTouchMove", evt);
     }
   }
@@ -88,6 +104,10 @@ export default class extends VictoryContainer {
   handleResponderEnd(evt) {
     if (this.props.onTouchEnd) {
       this.props.onTouchEnd(evt);
+    }
+    if (this.props.onScrollHandler) {
+      this.setState({ touchReleased: true });
+      this.props.onScrollHandler(true);
     }
     this.callOptionalEventCallback("onTouchEnd", evt);
   }
@@ -102,7 +122,7 @@ export default class extends VictoryContainer {
       height,
       portalZIndex,
       responsive,
-      disableContainerEvents
+      disableContainerEvents,
     } = props;
     const children = this.getChildren(props);
     const dimensions = responsive
@@ -114,14 +134,14 @@ export default class extends VictoryContainer {
       zIndex: portalZIndex,
       position: "absolute",
       top: 0,
-      left: 0
+      left: 0,
     };
     const portalSvgStyle = assign({ overflow: "visible" }, dimensions);
     const portalProps = {
       width,
       height,
       viewBox: svgProps.viewBox,
-      style: portalSvgStyle
+      style: portalSvgStyle,
     };
     const handlers = disableContainerEvents
       ? {}
