@@ -6,7 +6,7 @@
 
 Install victory-native:
 ```sh
-$ npm install victory-native --save
+$ npm install victory-native@legacy --save
 ```
 
 Install react-native-svg:
@@ -67,11 +67,12 @@ To open the demo app, just fire up the expo app.
 # Install victory and its dependencies
 $ git clone https://github.com/FormidableLabs/victory
 $ cd victory
-$ yarn install
-# Open up the React Native demo app
-$ cd demo/rn
-$ yarn install
-$ yarn start
+$ pnpm install
+$ pnpm run build --watch
+# In a new terminal, open up the React Native demo app
+$ cd victory/demo/rn
+$ pnpm install
+$ pnpm start
 ```
 
 Once Expo has fired up, it should open a web browser window where you can find instructions to open the demo application (either on a simulator or a physical device using the Expo Go app).
@@ -80,7 +81,7 @@ Changes to the Victory and Victory Native source code will be reflected in the d
 
 ### Documentation
 
-See the docs and examples on [the Victory website](https://formidable.com/open-source/victory/docs/native).
+See the docs and examples on [the Victory website](https://commerce.nearform.com/open-source/victory/docs/native/).
 
 ## Contributor Covenant Code of Conduct
 
@@ -93,7 +94,5 @@ Please review our [Code of Conduct][code] before contributing.
 
 
 [code]: https://github.com/FormidableLabs/.github/blob/master/CODE_OF_CONDUCT.md
-[victory-native-demo]:https://github.com/FormidableLabs/victory-native-demo
 [react-native-svg-readme]: https://github.com/react-native-community/react-native-svg#notice
 [maintenance-image]: https://img.shields.io/badge/maintenance-active-green.svg
-
