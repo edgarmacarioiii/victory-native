@@ -18,20 +18,20 @@ export interface VictoryCursorContainerNativeProps
 }
 
 export const VictoryCursorContainer = (
-  initialProps: VictoryCursorContainerNativeProps,
+  initialProps: VictoryCursorContainerNativeProps
 ) => {
-  const props = useVictoryCursorContainer({
+  const { props, children } = useVictoryCursorContainer({
     ...initialProps,
     cursorLabelComponent: initialProps.cursorLabelComponent ?? <VictoryLabel />,
     cursorComponent: initialProps.cursorComponent ?? <LineSegment />,
   });
-  return <VictoryContainer {...props} />;
+  return <VictoryContainer {...props}>{children}</VictoryContainer>;
 };
 
 VictoryCursorContainer.role = "container";
 
 VictoryCursorContainer.defaultEvents = (
-  initialProps: VictoryCursorContainerNativeProps,
+  initialProps: VictoryCursorContainerNativeProps
 ) => {
   const props = { ...VICTORY_CURSOR_CONTAINER_DEFAULT_PROPS, ...initialProps };
   const createEventHandler =
